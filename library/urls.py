@@ -1,8 +1,9 @@
 from django.urls import path
-from . import views
+from .views import home, manage_customers, manage_books
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('manage-books/', views.manage_books, name='manage_books'),
-    path('manage-users/', views.manage_users, name='manage_users'),
+    path('', home, name='home'),  # Home URL pointing to the home view
+    path('manage-books/', manage_books, name='manage_books'),  # Correct and unified URL for managing books
+    path('manage-customers/', manage_customers, name='manage_customers'),  # Unified URL for managing customers
 ]
+

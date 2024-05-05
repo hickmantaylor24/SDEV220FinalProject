@@ -1,10 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="my-4">Manage Books</h1>
-    <div class="mb-3">
-        <button class="btn btn-primary" onclick="alert('Add book functionality coming soon!');">Add Book</button>
-        <button class="btn btn-danger" onclick="alert('Remove book functionality coming soon!');">Remove Book</button>
-    </div>
-    <p><a href="{% url 'home' %}" class="btn btn-secondary mt-2">Back to home</a></p>
+<h1>Manage Books</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    <h2>Add a New Book</h2>
+    {{ book_form.as_p }}
+    <button type="submit" name="add_book">Add Book</button>
+</form>
+
+<hr>
+
+<form method="post" action="">
+    {% csrf_token %}
+    <h2>Add a New Book Copy</h2>
+    {{ book_copy_form.as_p }}
+    <button type="submit" name="add_book_copy">Add Book Copy</button>
+</form>
+
+<hr>
+
+<form method="post" action="">
+    {% csrf_token %}
+    <h2>Remove a Book Copy</h2>
+    {{ remove_book_copy_form.as_p }}
+    <button type="submit" name="remove_book_copy">Remove Book Copy</button>
+</form>
+
+<a href="{% url 'home' %}">Back to home</a>
 {% endblock %}
+

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="my-4">Manage Customers</h1>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" onsubmit="return confirm('Are you sure you want to add this customer?');">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ add_form.as_p }}
+            <button type="submit" name="add_customer" class="btn btn-primary">Add Customer</button>
+        </div>
+    </form>
+
+    <form method="post" onsubmit="return confirm('Are you sure you want to remove this customer?');">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ remove_form.as_p }}
+            <button type="submit" name="remove_customer" class="btn btn-danger">Remove Customer</button>
+        </div>
+    </form>
+
+    <p><a href="{% url 'home' %}" class="btn btn-secondary mt-2">Back to home</a></p>
+{% endblock %}
