@@ -11,31 +11,72 @@
 </ul>
 {% endif %}
 
-<form method="post" action="">
+<!-- Add a New Book Form -->
+<form method="post" action="" class="mb-3">
     {% csrf_token %}
     <h2>Add a New Book</h2>
-    {{ book_form.as_p }}
-    <button type="submit" name="add_book">Add Book</button>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-1 col-form-label">{{ book_form.title.label_tag }}</label>
+        <div class="col-sm-11">
+            {{ book_form.title }}
+        </div>
+    </div>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-1 col-form-label">{{ book_form.author.label_tag }}</label>
+        <div class="col-sm-11">
+            {{ book_form.author }}
+        </div>
+    </div>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-1 col-form-label">{{ book_form.genre.label_tag }}</label>
+        <div class="col-sm-11">
+            {{ book_form.genre }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" name="add_book">Add Book</button>
 </form>
 
 <hr>
 
-<form method="post" action="">
+<!-- Add a New Book Copy Form -->
+<form method="post" action="" class="mb-3">
     {% csrf_token %}
     <h2>Add a New Book Copy</h2>
-    {{ book_copy_form.as_p }}
-    <button type="submit" name="add_book_copy">Add Book Copy</button>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-1 col-form-label">{{ book_copy_form.book.label_tag }}</label>
+        <div class="col-sm-11">
+            {{ book_copy_form.book }}
+        </div>
+    </div>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-1 col-form-label">{{ book_copy_form.copy_id.label_tag }}</label>
+        <div class="col-sm-11">
+            {{ book_copy_form.copy_id }}
+        </div>
+    </div>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-2 col-form-label">{{ book_copy_form.is_available.label_tag }}</label>
+        <div class="col-sm-10">
+            {{ book_copy_form.is_available }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" name="add_book_copy">Add Book Copy</button>
 </form>
 
 <hr>
 
-<form method="post" action="">
+<!-- Remove a Book Copy Form -->
+<form method="post" action="" class="mb-3">
     {% csrf_token %}
     <h2>Remove a Book Copy</h2>
-    {{ remove_book_copy_form.as_p }}
-    <button type="submit" name="remove_book_copy">Remove Book Copy</button>
+    <div class="row mb-3 align-items-center">
+        <label class="col-sm-3 col-form-label">{{ remove_book_copy_form.book_copy.label_tag }}</label>
+        <div class="col-sm-9">
+            {{ remove_book_copy_form.book_copy }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-danger" name="remove_book_copy">Remove Book Copy</button>
 </form>
 
-<a href="{% url 'home' %}">Back to home</a>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back to home</a>
 {% endblock %}
-
