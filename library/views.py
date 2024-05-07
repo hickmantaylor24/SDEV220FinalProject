@@ -1,10 +1,38 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import AddCustomerForm, RemoveCustomerForm, BookForm, BookCopyForm, RemoveBookCopyForm
+from .forms import AddCustomerForm, RemoveCustomerForm, BookForm, BookCopyForm, RemoveBookCopyForm, LoginForm
 from .models import Book, BookCopy, Customer
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import Group
 
 def home(request):
     return render(request, 'home.html')
+
+
+def library_management_login(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)  # Use the custom LoginForm
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None and user.is_active:
+                if user.is_superuser:
+                    login(request, user)
+                    return redirect('admin_dashboard')
+                elif user.is_staff:
+                    login(request, user)
+                    return redirect('staff_dashboard')
+            else:
+                return render(request, 'login.html', {'error_message': 'Invalid credentials'})
+    else:
+        form = LoginForm()  # Instantiate an empty LoginForm for GET requests
+    return render(request, 'login.html', {'form': form})
+
+#admin dashboard
+def admin_dashboard(request):
+    return render(request, 'admin_dashboard.html')
+
 
 def manage_customers(request):
     if request.method == 'POST':
@@ -61,4 +89,3 @@ def manage_books(request):
         'book_copy_form': book_copy_form,
         'remove_book_copy_form': remove_book_copy_form
     })
-
