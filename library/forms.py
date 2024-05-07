@@ -1,5 +1,12 @@
 from django import forms
 from .models import Customer, Book, BookCopy
+from django.contrib.auth.forms import AuthenticationForm
+
+
+#Login Form
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label="Username", max_length=63, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 # Form for adding a new customer
 class AddCustomerForm(forms.ModelForm):
