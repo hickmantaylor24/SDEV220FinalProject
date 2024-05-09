@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-# Defines a book with title, author, and genre.
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)

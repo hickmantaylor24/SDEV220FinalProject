@@ -1,7 +1,15 @@
 from django import forms
+<<<<<<< HEAD
 from .models import Customer, Book, BookCopy, Transaction
 from django.contrib.auth.forms import AuthenticationForm
 
+=======
+from .models import Customer, Book, BookCopy
+from django.contrib.auth.forms import AuthenticationForm
+
+
+#Login Form
+>>>>>>> 7cb77392616b3dd5dc1f5330843fbdcc4c06d31a
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Username", max_length=63, widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
