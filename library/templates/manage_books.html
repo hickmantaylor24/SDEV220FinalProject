@@ -1,82 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Manage Books</h1>
+<div class="container">
+    <h1>Manage Books</h1>
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-<!-- Add a New Book Form -->
-<form method="post" action="" class="mb-3">
-    {% csrf_token %}
-    <h2>Add a New Book</h2>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-1 col-form-label">{{ book_form.title.label_tag }}</label>
-        <div class="col-sm-11">
-            {{ book_form.title }}
+    <!-- Add a New Book Form -->
+    <form method="post" action="" class="mb-3">
+        {% csrf_token %}
+        <h2>Add a New Book</h2>
+        <div class="form-group">
+            {{ book_form.title.label_tag }} {{ book_form.title }}
         </div>
-    </div>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-1 col-form-label">{{ book_form.author.label_tag }}</label>
-        <div class="col-sm-11">
-            {{ book_form.author }}
+        <div class="form-group">
+            {{ book_form.author.label_tag }} {{ book_form.author }}
         </div>
-    </div>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-1 col-form-label">{{ book_form.genre.label_tag }}</label>
-        <div class="col-sm-11">
-            {{ book_form.genre }}
+        <div class="form-group">
+            {{ book_form.genre.label_tag }} {{ book_form.genre }}
         </div>
-    </div>
-    <button type="submit" class="btn btn-primary" name="add_book">Add Book</button>
-</form>
+        <button type="submit" class="btn btn-primary" name="add_book">Add Book</button>
+    </form>
 
-<hr>
+    <hr>
 
-<!-- Add a New Book Copy Form -->
+   <!-- Add a New Book Copy Form -->
 <form method="post" action="" class="mb-3">
     {% csrf_token %}
     <h2>Add a New Book Copy</h2>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-1 col-form-label">{{ book_copy_form.book.label_tag }}</label>
-        <div class="col-sm-11">
-            {{ book_copy_form.book }}
-        </div>
+    <div class="mb-3">
+        <label>{{ book_copy_form.book.label }}:</label>
+        {{ book_copy_form.book }}
     </div>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-1 col-form-label">{{ book_copy_form.copy_id.label_tag }}</label>
-        <div class="col-sm-11">
-            {{ book_copy_form.copy_id }}
-        </div>
-    </div>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-2 col-form-label">{{ book_copy_form.is_available.label_tag }}</label>
-        <div class="col-sm-10">
-            {{ book_copy_form.is_available }}
-        </div>
+    <div class="mb-3">
+        <label>{{ book_copy_form.is_available.label }}:</label>
+        {{ book_copy_form.is_available }}
     </div>
     <button type="submit" class="btn btn-primary" name="add_book_copy">Add Book Copy</button>
 </form>
+    <hr>
 
-<hr>
-
-<!-- Remove a Book Copy Form -->
-<form method="post" action="" class="mb-3">
-    {% csrf_token %}
-    <h2>Remove a Book Copy</h2>
-    <div class="row mb-3 align-items-center">
-        <label class="col-sm-3 col-form-label">{{ remove_book_copy_form.book_copy.label_tag }}</label>
-        <div class="col-sm-9">
-            {{ remove_book_copy_form.book_copy }}
+    <!-- Remove a Book Copy Form -->
+    <form method="post" action="" class="mb-3">
+        {% csrf_token %}
+        <h2>Remove a Book Copy</h2>
+        <div class="form-group">
+            {{ remove_book_copy_form.book_copy.label_tag }} {{ remove_book_copy_form.book_copy }}
         </div>
-    </div>
-    <button type="submit" class="btn btn-danger" name="remove_book_copy">Remove Book Copy</button>
-</form>
+        <button type="submit" class="btn btn-danger" name="remove_book_copy">Remove Book Copy</button>
+    </form>
 
-<a href="{% url 'home' %}" class="btn btn-secondary">Back to home</a>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+</div>
 {% endblock %}

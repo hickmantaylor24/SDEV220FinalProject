@@ -4,28 +4,48 @@
     <h1 class="my-4">Manage Customers</h1>
 
     {% if messages %}
-    <ul class="messages">
+    <div class="alert alert-dismissible">
         {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <div{% if message.tags %} class="alert {{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
         {% endfor %}
-    </ul>
+    </div>
     {% endif %}
 
-    <form method="post" onsubmit="return confirm('Are you sure you want to add this customer?');">
+    <!-- Form for Adding a Customer -->
+    <form method="post" onsubmit="return confirm('Are you sure you want to add this customer?');" class="mb-4">
         {% csrf_token %}
-        <div class="mb-3">
-            {{ add_form.as_p }}
-            <button type="submit" name="add_customer" class="btn btn-primary">Add Customer</button>
+        <h2>Add a New Customer</h2>
+        <div class="form-group">
+            <label>{{ add_form.first_name.label }}</label>
+            {{ add_form.first_name }}
+            {{ add_form.first_name.errors }}
         </div>
+        <div class="form-group">
+            <label>{{ add_form.last_name.label }}</label>
+            {{ add_form.last_name }}
+            {{ add_form.last_name.errors }}
+        </div>
+        <div class="form-group">
+            <label>{{ add_form.email.label }}</label>
+            {{ add_form.email }}
+            {{ add_form.email.errors }}
+        </div>
+        <button type="submit" name="add_customer" class="btn btn-primary">Add Customer</button>
     </form>
 
-    <form method="post" onsubmit="return confirm('Are you sure you want to remove this customer?');">
+    <!-- Form for Removing a Customer -->
+    <form method="post" onsubmit="return confirm('Are you sure you want to remove this customer?');" class="mb-4">
         {% csrf_token %}
-        <div class="mb-3">
-            {{ remove_form.as_p }}
-            <button type="submit" name="remove_customer" class="btn btn-danger">Remove Customer</button>
+        <h2>Remove a Customer</h2>
+        <div class="form-group">
+            <label>{{ remove_form.customer.label }}</label>
+            {{ remove_form.customer }}
+            {{ remove_form.customer.errors }}
         </div>
+        <button type="submit" name="remove_customer" class="btn btn-danger">Remove Customer</button>
     </form>
 
-    <p><a href="{% url 'home' %}" class="btn btn-secondary mt-2">Back to home</a></p>
+    <p><a href="{% url 'home' %}" class="btn btn-secondary mt-2">Back to Home</a></p>
 {% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Return Book</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form method="post" action="{% url 'return_book' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.customer_id.label_tag }}
+                {{ form.customer_id }}
+                {{ form.customer_id.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.copy_id.label_tag }}
+                {{ form.copy_id }}
+                {{ form.copy_id.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary">Return</button>
+        </form>
+    </div>
+</div>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+
+<script>
+$(document).ready(function() {
+    $('#id_customer_id').change(function() {
+        var customerId = $(this).val();  // Get the selected customer ID
+        if (customerId) {
+            $.ajax({
+                url: '{% url "get_books" %}',  // URL to your view that returns JSON for book copies
+                data: {
+                    'customer_id': customerId,
+                    'action': 'return'
+                },
+                success: function(data) {
+                    $("#id_copy_id").html('');  // Clear existing options
+                    data.books.forEach(function(book) {
+                        $("#id_copy_id").append(new Option(book.title, book.id));  // Append new options
+                    });
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

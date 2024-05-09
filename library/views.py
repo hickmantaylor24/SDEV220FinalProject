@@ -1,10 +1,41 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import AddCustomerForm, RemoveCustomerForm, BookForm, BookCopyForm, RemoveBookCopyForm
-from .models import Book, BookCopy, Customer
+from .forms import AddCustomerForm, RemoveCustomerForm, BookForm, BookCopyForm, RemoveBookCopyForm, LoginForm, CheckoutForm, ReturnForm
+from .models import Book, BookCopy, Customer, Transaction
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import Group
+from django.utils import timezone
+from django.http import HttpResponse, JsonResponse
+
 
 def home(request):
     return render(request, 'home.html')
+
+
+def library_management_login(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)  # Use the custom LoginForm
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None and user.is_active:
+                if user.is_superuser:
+                    login(request, user)
+                    return redirect('admin_dashboard')
+                elif user.is_staff:
+                    login(request, user)
+                    return redirect('staff_dashboard')
+            else:
+                return render(request, 'login.html', {'error_message': 'Invalid credentials'})
+    else:
+        form = LoginForm()  # Instantiate an empty LoginForm for GET requests
+    return render(request, 'login.html', {'form': form})
+
+#admin dashboard
+def admin_dashboard(request):
+    return render(request, 'admin_dashboard.html')
+
 
 def manage_customers(request):
     if request.method == 'POST':
@@ -62,3 +93,74 @@ def manage_books(request):
         'remove_book_copy_form': remove_book_copy_form
     })
 
+
+def checkout(request):
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            book_copy = form.cleaned_data['copy_id']  # This should directly provide a BookCopy instance
+            customer = form.cleaned_data['customer_id']  # This should directly provide a Customer instance
+
+            if book_copy.is_available:
+                # method in the Customer model check_out_book handles the logic.
+                if customer.check_out_book(book_copy):  # This method would also update 'is_available' within it.
+                    messages.success(request, "Book checked out successfully!")
+                    return redirect('checkout')  
+                else:
+                    messages.error(request, "This book is currently not available.")
+            else:
+                messages.error(request, "This book is currently not available.")
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = CheckoutForm()
+
+    return render(request, 'checkout.html', {'form': form})
+
+def return_book(request):
+    if request.method == 'POST':
+        form = ReturnForm(request.POST)
+        if form.is_valid():
+            # Directly use the BookCopy and Customer instances provided by the form
+            book_copy = form.cleaned_data['copy_id']
+            customer = form.cleaned_data['customer_id']
+
+            # Call a method in the Customer model that handles the logic of returning a book
+            if customer.return_book(book_copy):
+                messages.success(request, "Book returned successfully!")
+            else:
+                messages.error(request, "This book was not checked out by this customer or has already been returned.")
+        else:
+            # Collect and show all form errors if the form is not valid
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = ReturnForm()
+
+    return render(request, 'return.html', {'form': form})
+
+def get_books(request):
+    customer_id = request.GET.get('customer_id')
+    action = request.GET.get('action')
+
+    if not customer_id or not action:
+        return JsonResponse({'error': 'Missing required parameters'}, status=400)
+
+    try:
+        customer = Customer.objects.get(pk=customer_id)
+    except Customer.DoesNotExist:
+        return JsonResponse({'error': 'Customer not found'}, status=404)
+
+    if action == 'return':
+        # Fetching book copies that are currently checked out by the customer and not yet returned
+        transactions = Transaction.objects.filter(
+            customer=customer,
+            return_date__isnull=True
+        ).select_related('book_copy').filter(book_copy__is_available=False)
+
+        book_list = [{'id': txn.book_copy.id, 'title': f"{txn.book_copy.book.title} - Copy {txn.book_copy.copy_id}"} for txn in transactions]
+    else:
+        return JsonResponse({'error': 'Invalid action specified'}, status=400)
+
+    return JsonResponse({'books': book_list})
