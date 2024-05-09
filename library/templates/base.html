@@ -15,16 +15,29 @@
         {% endblock %}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {% if user.is_superuser %}
+{% if user.is_superuser and not on_admin_dashboard %}
     <form action="{% url 'admin_dashboard' %}">
       <button type="submit">Return to Admin Dashboard</button>
     </form>
-  {% endif %}
-  {% if user.is_authenticated %}
+{% endif %}
+
+{% if user.is_authenticated %}
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit">Logout</button>
   </form>
+{% endif %}
+
+{% if not request.user.is_superuser and not on_home_page %}
+    <p><a href="{% url 'home' %}" class="btn btn-secondary mt-2">Back to Home</a></p>
+{% endif %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
 {% endif %}
 </body>
 </html>

@@ -9,7 +9,8 @@ from django.http import HttpResponse, JsonResponse
 
 
 def home(request):
-    return render(request, 'home.html')
+    context = {'on_home_page': True}  # Context variable for home page
+    return render(request, 'home.html', context)
 
 def manage_staff(request):
     if not request.user.is_superuser:
@@ -59,7 +60,8 @@ def library_management_login(request):
 
 #admin dashboard
 def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
+    context = {'on_admin_dashboard': True}  # Context variable for admin dashboard
+    return render(request, 'admin_dashboard.html', context)
 
 
 def manage_customers(request):
