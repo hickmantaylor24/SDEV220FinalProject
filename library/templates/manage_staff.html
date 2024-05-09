@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Manage Staff</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" name="create">Create Staff</button>
+</form>
+
+<hr>
+
+<h3>Delete Staff Member</h3>
+<form method="post">
+  {% csrf_token %}
+  <select name="user_id">
+    {% for user in staff_members %}
+      <option value="{{ user.id }}">{{ user.username }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" name="delete">Delete</button>
+</form>
+
+<hr>
+
+<h3>Existing Staff Members</h3>
+<ul>
+  {% for user in staff_members %}
+    <li>{{ user.username }}</li>
+  {% endfor %}
+</ul>
+<p><a href="{% url 'home' %}" class="btn btn-secondary mt-2">Back to Home</a></p>
+{% endblock %}

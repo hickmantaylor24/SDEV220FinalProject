@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import AddCustomerForm, RemoveCustomerForm, BookForm, BookCopyForm, RemoveBookCopyForm, LoginForm, CheckoutForm, ReturnForm
+from .forms import StaffUserCreationForm, AddCustomerForm, RemoveCustomerForm, BookForm, BookCopyForm, RemoveBookCopyForm, LoginForm, CheckoutForm, ReturnForm
 from .models import Book, BookCopy, Customer, Transaction
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 
@@ -11,6 +11,31 @@ from django.http import HttpResponse, JsonResponse
 def home(request):
     return render(request, 'home.html')
 
+def manage_staff(request):
+    if not request.user.is_superuser:
+        return redirect('access_denied')  # Redirect non-superusers to an access denied page (need to create)
+
+    if request.method == 'POST':
+        if 'create' in request.POST:  # Check if this is a create request
+            form = StaffUserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('manage_staff')  # Reload the page after creation
+
+        elif 'delete' in request.POST:  # Check if this is a delete request
+            user_id = request.POST.get('user_id')  # Get the user ID from the dropdown
+            try:
+                user = User.objects.get(id=user_id, is_staff=True, is_superuser=False)  # Ensure only staff users can be deleted
+                user.delete()
+                return redirect('manage_staff')  # Reload the page after deletion
+            except User.DoesNotExist:
+                pass  # Handle error or add a message if the user does not exist
+
+    else:
+        form = StaffUserCreationForm()
+
+    staff_members = User.objects.filter(is_staff=True, is_superuser=False)
+    return render(request, 'manage_staff.html', {'form': form, 'staff_members': staff_members})
 
 def library_management_login(request):
     if request.method == 'POST':
@@ -25,7 +50,7 @@ def library_management_login(request):
                     return redirect('admin_dashboard')
                 elif user.is_staff:
                     login(request, user)
-                    return redirect('staff_dashboard')
+                    return redirect('home')
             else:
                 return render(request, 'login.html', {'error_message': 'Invalid credentials'})
     else:
