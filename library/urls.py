@@ -14,7 +14,7 @@ urlpatterns = [
     path('return/', return_book, name='return_book'),  # URL for returning books
     path('ajax/get_books/', get_books, name='get_books'),  # Example for AJAX URL,
     path('manage_staff/', manage_staff, name='manage_staff'),  # Correct and unified URL for managing staff
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'), # URL for logout - sends to login (root)
 
 ]
 
