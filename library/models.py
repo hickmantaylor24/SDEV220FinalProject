@@ -1,22 +1,23 @@
 from django.db import models
 from django.utils import timezone
 
+# Represents a book in the library.
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     genre = models.CharField(max_length=100)
 
     def __str__(self):
-        return {self.title} - {self.author}
+        return {self.title} - {self.author} # Displays the title and author when called
 
 # Represents a specific copy of a book in the library.
 class BookCopy(models.Model):
-    book = models.ForeignKey(Book, related_name='copies', on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, related_name='copies', on_delete=models.CASCADE) # Pulls the values form the Book
     copy_id = models.PositiveIntegerField()
     is_available = models.BooleanField(default=True)  # Indicates if the copy is available for checkout.
 
     def __str__(self):
-        return f'{self.book.title} - {self.book.author} - Copy {self.copy_id}'
+        return f'{self.book.title} - {self.book.author} - Copy {self.copy_id}' # Displays title, author, and copy id when called
 
     # Toggles the availability of the book copy.
     def toggle_availability(self):
@@ -38,7 +39,7 @@ class Customer(models.Model):
     borrowed_book_copies = models.ManyToManyField(BookCopy, blank=True)  # Links to book copies that the customer has borrowed.
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name}' # Displays customers' first and last name when called
 
     # Checks out a book copy to the customer if it is available.
     def check_out_book(self, book_copy):
@@ -58,7 +59,7 @@ class Customer(models.Model):
             return True
         return False
 
-# A model for managing collections of books.
+# A model for managing collections of books in the library.
 class BookList(models.Model):
     books = models.ManyToManyField(Book)  # Many-to-many relationship to Book.
 
