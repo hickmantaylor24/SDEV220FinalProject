@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <!-- ajax for dynamic dropdown -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <div class="row">
     <div class="col-md-6 offset-md-3">
         <h2>Return Book</h2>
+            <!-- display messages -->
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -12,6 +14,7 @@
                 </div>
             {% endfor %}
         {% endif %}
+            <!-- return book form -->
         <form method="post" action="{% url 'return_book' %}">
             {% csrf_token %}
             <div class="mb-3">
@@ -29,6 +32,7 @@
     </div>
 </div>
 
+    <!-- javascript for dynamic dropdown -->
 
 <script>
 $(document).ready(function() {

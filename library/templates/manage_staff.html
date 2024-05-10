@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Manage Staff</h2>
+    <!-- display messages -->
 
 {% if messages %}
   <div>
@@ -13,6 +14,7 @@
   </div>
 {% endif %}
 
+    <!-- create staff form -->
 <form method="post">
   {% csrf_token %}
   {{ form.non_field_errors }}
@@ -32,7 +34,7 @@
 </form>
 
 <hr>
-
+    <!-- delete staff with dropdown -->
 <h3>Delete Staff Member</h3>
 <form method="post">
   {% csrf_token %}
@@ -45,7 +47,7 @@
 </form>
 
 <hr>
-
+    <!-- list of staff -->
 <h3>Existing Staff Members</h3>
 <ul>
   {% for user in staff_members %}
