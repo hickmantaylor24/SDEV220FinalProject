@@ -7,7 +7,7 @@ class Book(models.Model):
     genre = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.title
+        return {self.title} - {self.author}
 
 # Represents a specific copy of a book in the library.
 class BookCopy(models.Model):
@@ -16,7 +16,7 @@ class BookCopy(models.Model):
     is_available = models.BooleanField(default=True)  # Indicates if the copy is available for checkout.
 
     def __str__(self):
-        return f'{self.book.title} - Copy {self.copy_id}'
+        return f'{self.book.title} - {self.book.author} - Copy {self.copy_id}'
 
     # Toggles the availability of the book copy.
     def toggle_availability(self):

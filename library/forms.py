@@ -53,7 +53,7 @@ class BookCopyForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(BookCopyForm, self).__init__(*args, **kwargs)
-        self.fields['book'].label_from_instance = lambda obj: f"{obj.title}"
+        self.fields['book'].label_from_instance = lambda obj: f"{obj.title} - {obj.author}"
 
 class RemoveBookCopyForm(forms.Form):
     """
