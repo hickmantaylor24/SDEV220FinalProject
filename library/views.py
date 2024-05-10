@@ -14,23 +14,28 @@ def home(request):
 
 def manage_staff(request):
     if not request.user.is_superuser:
-        return redirect('access_denied')  # Redirect non-superusers to an access denied page (need to create)
+        messages.error(request, "Access denied: You do not have permission to view this page.")
+        return redirect('access_denied')  # Redirect non-superusers to an access denied page (make sure this route exists)
 
     if request.method == 'POST':
         if 'create' in request.POST:  # Check if this is a create request
             form = StaffUserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Staff member added successfully.')
                 return redirect('manage_staff')  # Reload the page after creation
-
+            else:
+                # If the form is not valid, render the page again with the form to show validation errors
+                messages.error(request, 'Failed to add staff member. Please check the form for errors.')
         elif 'delete' in request.POST:  # Check if this is a delete request
-            user_id = request.POST.get('user_id')  # Get the user ID from the dropdown
+            user_id = request.POST.get('user_id')
             try:
                 user = User.objects.get(id=user_id, is_staff=True, is_superuser=False)  # Ensure only staff users can be deleted
                 user.delete()
-                return redirect('manage_staff')  # Reload the page after deletion
+                messages.success(request, 'Staff member deleted successfully.')
             except User.DoesNotExist:
-                pass  # Handle error or add a message if the user does not exist
+                messages.error(request, 'Failed to delete staff member: User does not exist.')
+            return redirect('manage_staff')  # Reload the page after deletion
 
     else:
         form = StaffUserCreationForm()
