@@ -17,7 +17,7 @@ class StaffUserCreationForm(UserCreationForm):
             user.save()
         return user
 
-# Form for the admin login (superuser)
+# Form for the login page
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Username", max_length=63, widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
